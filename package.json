@@ -1,0 +1,29 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-server": "node dist/app.js",
+    "name": "echo hello keyvalue my name is johaan",
+    "build": "rm -rf dist/ && tsc",
+    "brun": "npm run build && node dist/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "pg": "^8.12.0",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.20",
+    "typeorm-naming-strategies": "^4.1.0",
+    "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21",
+    "@types/node": "20.14.9"
+  }
+}
