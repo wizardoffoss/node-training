@@ -53,7 +53,7 @@ class DepartmentController {
         });
         this.createDepartment = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                if (false) {
+                if (req.role !== role_enum_1.Role.HR) {
                     throw new http_exception_1.default(403, "Access Forbidden");
                 }
                 const departmentDto = (0, class_transformer_1.plainToInstance)(department_dto_1.CreateDepartmentDto, req.body);

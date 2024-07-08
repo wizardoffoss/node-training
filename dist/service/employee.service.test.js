@@ -43,16 +43,18 @@ describe("Employee Service", () => {
         // const mock = jest
         //     .fn(employeeRepository.findOneBy)
         //     .mockResolvedValue({ id: 1, name: "as" } as Employee);
-        const mock = jest.fn();
+        const mock = jest.fn(employeeRepository.findOneBy);
         (0, jest_when_1.when)(mock)
             .calledWith({ id: 1 })
             .mockResolvedValue({ id: 1, name: "as" })
             .calledWith({ id: 2 })
-            .mockResolvedValue({ id: 2, name: "valuess" });
+            .mockResolvedValue({ id: 2, name: "values" });
         employeeRepository.findOneBy = mock;
-        const users = yield employeeService.getEmployeeByID(2);
+        const users = yield employeeService.getEmployeeByID(1);
         expect(users.name).toEqual("as");
-        expect(mock).toHaveBeenCalledTimes(1);
+        const user2 = yield employeeService.getEmployeeByID(2);
+        expect(user2.name).toEqual("values");
+        expect(mock).toHaveBeenCalledTimes(2);
     }));
 });
 //# sourceMappingURL=employee.service.test.js.map

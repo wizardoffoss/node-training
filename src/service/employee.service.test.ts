@@ -38,16 +38,18 @@ describe("Employee Service", () => {
         // const mock = jest
         //     .fn(employeeRepository.findOneBy)
         //     .mockResolvedValue({ id: 1, name: "as" } as Employee);
-        const mock = jest.fn();
+        const mock = jest.fn(employeeRepository.findOneBy);
         when(mock)
             .calledWith({ id: 1 })
             .mockResolvedValue({ id: 1, name: "as" } as unknown as Employee)
             .calledWith({ id: 2 })
-            .mockResolvedValue({ id: 2, name: "valuess" });
+            .mockResolvedValue({ id: 2, name: "values" } as unknown as Employee);
         employeeRepository.findOneBy = mock;
 
-        const users = await employeeService.getEmployeeByID(2);
+        const users = await employeeService.getEmployeeByID(1);
         expect(users.name).toEqual("as");
-        expect(mock).toHaveBeenCalledTimes(1);
+        const user2 = await employeeService.getEmployeeByID(2);
+        expect(user2.name).toEqual("values");
+        expect(mock).toHaveBeenCalledTimes(2);
     });
 });

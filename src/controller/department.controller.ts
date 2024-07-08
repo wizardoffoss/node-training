@@ -65,7 +65,7 @@ class DepartmentController {
 		next: NextFunction
 	) => {
 		try {
-			if (false) { 
+			if (req.role !== Role.HR) { 
 				throw new HttpException(403, "Access Forbidden");
 			}
 			const departmentDto = plainToInstance(CreateDepartmentDto, req.body);

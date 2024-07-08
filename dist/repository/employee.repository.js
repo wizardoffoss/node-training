@@ -10,14 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class EmployeeRepository {
-    // private dataSource: DataSource;
     constructor(employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
     find() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.employeeRepository.find({
-                // relations: ["address"],
                 relations: { address: true, department: true },
             });
         });
@@ -26,7 +24,6 @@ class EmployeeRepository {
         return __awaiter(this, void 0, void 0, function* () {
             return this.employeeRepository.findOne({
                 where: filter,
-                // relations: ["address"],
                 relations: { address: true, department: true },
             });
         });

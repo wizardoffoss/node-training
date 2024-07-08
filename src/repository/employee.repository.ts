@@ -3,12 +3,10 @@ import dataSource from "../db/data-source.db";
 import Employee from "../entity/employee.entity";
 
 class EmployeeRepository {
-	// private dataSource: DataSource;
 	constructor(private employeeRepository: Repository<Employee>) {}
 
 	async find(): Promise<Employee[]> {
 		return this.employeeRepository.find({
-			// relations: ["address"],
 			relations: { address: true, department: true },
 		});
 	}
@@ -16,7 +14,6 @@ class EmployeeRepository {
 	async findOneBy(filter: Partial<Employee>): Promise<Employee> {
 		return this.employeeRepository.findOne({
 			where: filter,
-			// relations: ["address"],
 			relations: { address: true, department: true },
 		});
 	}
