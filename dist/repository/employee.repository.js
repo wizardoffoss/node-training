@@ -8,32 +8,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const data_source_db_1 = __importDefault(require("../db/data-source.db"));
-const employee_entity_1 = __importDefault(require("../entity/employee.entity"));
-class employeeRepository {
-    constructor() {
-        this.find = () => __awaiter(this, void 0, void 0, function* () {
-            const employeeRepository = this.dataSource.getRepository(employee_entity_1.default);
-            return employeeRepository.find();
+class EmployeeRepository {
+    // private dataSource: DataSource;
+    constructor(employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+    find() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.employeeRepository.find({
+                // relations: ["address"],
+                relations: { address: true, department: true },
+            });
         });
-        this.findOneBy = (filter) => __awaiter(this, void 0, void 0, function* () {
-            const employeeRepository = this.dataSource.getRepository(employee_entity_1.default);
-            return employeeRepository.findOne({ where: filter });
+    }
+    findOneBy(filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.employeeRepository.findOne({
+                where: filter,
+                // relations: ["address"],
+                relations: { address: true, department: true },
+            });
         });
-        this.save = (newEmployee) => __awaiter(this, void 0, void 0, function* () {
-            const employeeRepository = this.dataSource.getRepository(employee_entity_1.default);
-            employeeRepository.save(newEmployee);
+    }
+    save(newEmployee) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.employeeRepository.save(newEmployee);
         });
-        this.delete = (id) => __awaiter(this, void 0, void 0, function* () {
-            const employeeRepository = this.dataSource.getRepository(employee_entity_1.default);
-            yield employeeRepository.softDelete(id);
+    }
+    count(filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.employeeRepository.count({ where: filter });
         });
-        this.dataSource = data_source_db_1.default;
+    }
+    softDelete(filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.employeeRepository.softDelete(filter);
+        });
+    }
+    delete(filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.employeeRepository.delete(filter);
+        });
+    }
+    softRemove(filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.employeeRepository.softRemove(filter);
+        });
     }
 }
-exports.default = employeeRepository;
+exports.default = EmployeeRepository;
 //# sourceMappingURL=employee.repository.js.map

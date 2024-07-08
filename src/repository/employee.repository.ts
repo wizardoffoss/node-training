@@ -1,34 +1,45 @@
-import { DataSource } from "typeorm";
+import { DataSource, DeleteResult, Repository, UpdateResult } from "typeorm";
 import dataSource from "../db/data-source.db";
 import Employee from "../entity/employee.entity";
 
-class employeeRepository {
-    private dataSource: DataSource;
-    constructor() {
-        this.dataSource = dataSource
-    }
+class EmployeeRepository {
+	// private dataSource: DataSource;
+	constructor(private employeeRepository: Repository<Employee>) {}
 
-    public find = async () => {
-        const employeeRepository = this.dataSource.getRepository(Employee)
-        return employeeRepository.find()
-    }
+	async find(): Promise<Employee[]> {
+		return this.employeeRepository.find({
+			// relations: ["address"],
+			relations: { address: true, department: true },
+		});
+	}
 
-    public findOneBy = async (filter: Partial<Employee>) => {
+	async findOneBy(filter: Partial<Employee>): Promise<Employee> {
+		return this.employeeRepository.findOne({
+			where: filter,
+			// relations: ["address"],
+			relations: { address: true, department: true },
+		});
+	}
 
-        const employeeRepository = this.dataSource.getRepository(Employee)
-        return employeeRepository.findOne({where: filter})
-    }
+	async save(newEmployee: Employee): Promise<Employee> {
+		return this.employeeRepository.save(newEmployee);
+	}
 
-    public save = async (newEmployee: Employee) => {
-        const employeeRepository = this.dataSource.getRepository(Employee)
-        employeeRepository.save(newEmployee)
-    }
+	async count(filter: Partial<Employee>): Promise<number> {
+		return this.employeeRepository.count({ where: filter });
+	}
 
-    public delete = async (id:number) => {
+	async softDelete(filter: Partial<Employee>): Promise<UpdateResult> {
+		return this.employeeRepository.softDelete(filter);
+	}
 
-        const employeeRepository = this.dataSource.getRepository(Employee)
-        await employeeRepository.softDelete(id)
-    }
+	async delete(filter: Partial<Employee>): Promise<DeleteResult> {
+		return this.employeeRepository.delete(filter);
+	}
+
+	async softRemove(filter: Partial<Employee>): Promise<Employee> {
+		return this.employeeRepository.softRemove(filter);
+	}
 }
 
-export default employeeRepository
+export default EmployeeRepository;

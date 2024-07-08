@@ -1,10 +1,14 @@
-import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
+import {
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+    DeleteDateColumn,
+} from "typeorm";
 
 class AbstractEntity {
-
     @PrimaryGeneratedColumn()
-    id: number;
-    
+    id: Number;
+
     @CreateDateColumn()
     createdAt: Date;
 
@@ -15,4 +19,4 @@ class AbstractEntity {
     deletedAt: Date;
 }
 
-export default AbstractEntity
+export default AbstractEntity;

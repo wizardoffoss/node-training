@@ -1,106 +1,168 @@
-// import EmployeeService from "../service/employee.service";
-// import express from "express";
+import { plainToInstance } from "class-transformer";
+import HttpException from "../exception/http.exception";
+import { EmployeeService } from "../service/employee.service";
+import { Router, Request, Response, NextFunction } from "express";
+import { CreateEmployeeDto, UpdateEmployeeDto } from "../dto/employee.dto";
+import { validate } from "class-validator";
+import { RequestWithUser } from "../utils/requestWithUser";
+import { Role } from "../utils/role.enum";
+import authorize from "../middleware/authorize.middleware";
 
-// class EmployeeController {
-//     private employeeService: EmployeeService
-//     public router: express.Router
+export class EmployeeController {
+	public router: Router;
+	constructor(private employeeService: EmployeeService) {
+		this.router = Router();
 
-//     constructor() {
-//         this.employeeService = new EmployeeService()
-//         this.router = express.Router();
+		this.router.get("/", authorize, this.getAllEmployees);
+		this.router.get("/:employeeID", authorize, this.getEmployeeByID);
+		this.router.post("/", authorize, this.createEmployee); 
+		this.router.put("/:employeeID", authorize, this.updateEmployeeByID);
+		this.router.delete("/:employeeID", authorize, this.deleteEmployeeByID);
+		this.router.post("/login", this.loginEmployee);
+	}
 
-//         this.router.get("/", this.getAllEmployees)
-//     }
+	public getAllEmployees = async (
+		req: RequestWithUser,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			if (!req.role) {
+				// throw new IncorrectPasswordException(ErrorCodes.UNAUTHORIZED)
+				throw new HttpException(403, "Access Forbidden");
+			}
+			const employees = await this.employeeService.getAllEmployees();
+			res.status(200).send(employees);
+		} catch (error) {
+			next(error);
+		}
+	};
 
-//     public async getAllEmployees(req:express.Request, res:express.Response){
-//         const employees = await this.employeeService.getAllEmployees();
-//         res.status(200).send(employees);
-//     }
-//     public async getEmployeeById(req:express.Request, res:express.Response){
+	public getEmployeeByID = async (
+		req: RequestWithUser,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			if (!req.role) {
+				// throw new IncorrectPasswordException(ErrorCodes.UNAUTHORIZED)
+				throw new HttpException(403, "Access Forbidden");
+			}
+			const employeeID = Number(req.params.employeeID);
+			if (!Number.isInteger(employeeID)) {
+				throw new HttpException(400, "ID is not an integer!");
+			}
+			const employee = await this.employeeService.getEmployeeByID(employeeID);
 
-//         const employee = await this.employeeService.getEmployeeById(Number(req.params.id))
+			res.status(200).send(employee);
+		} catch (error) {
+			next(error);
+		}
+	};
 
-//     }
+	public createEmployee = async (
+		req: RequestWithUser,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			const role = req.role;
+			if (role !== Role.HR) {
+				// throw new IncorrectPasswordException(ErrorCodes.UNAUTHORIZED)
+				throw new HttpException(403, "Access Forbidden");
+			}
 
-//     //public async createEmployee
-// }
+			const employeeDto = plainToInstance(CreateEmployeeDto, req.body);
+			const errors = await validate(employeeDto);
+			if (errors.length) {
+				const errorString = "Validation Failed!";
+				throw new HttpException(400, errorString, errors);
+			}
 
-// export default EmployeeController
+			const savedEmployee = await this.employeeService.createEmployee(
+				employeeDto.email,
+				employeeDto.name,
+				employeeDto.age,
+				employeeDto.password,
+				employeeDto.role,
+				employeeDto.address,
+				employeeDto.department
+			);
+			res.status(201).send(savedEmployee);
+		} catch (error) {
+			next(error);
+		}
+	};
 
+	public updateEmployeeByID = async (
+		req: RequestWithUser,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			const employeeID = Number(req.params.employeeID);
+			if (!Number.isInteger(employeeID)) {
+				throw new HttpException(400, "ID is not an integer!");
+			}
+			const employeeDto = plainToInstance(UpdateEmployeeDto, req.body);
+			const errors = await validate(employeeDto);
+			const role = req.role;
+			if (role !== Role.HR) {
+				// throw new IncorrectPasswordException(ErrorCodes.UNAUTHORIZED)
+				throw new HttpException(403, "Access Forbidden");
+			}
+			if (errors.length) {
+				const errorString = "Validation Failed!";
+				throw new HttpException(400, errorString, errors);
+			}
+			const updatedEmployee = await this.employeeService.updateEmployeeByID(
+				employeeID,
+				employeeDto.email,
+				employeeDto.name,
+				employeeDto.age,
+				employeeDto.address,
+				employeeDto.department
+			);
+			res.status(200).send(updatedEmployee);
+		} catch (error) {
+			next(error);
+		}
+	};
+	public deleteEmployeeByID = async (
+		req: RequestWithUser,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			const employeeID = Number(req.params.employeeID);
+			if (!Number.isInteger(employeeID)) {
+				throw new HttpException(400, "ID is not an integer!");
+			}
+			const role = req.role;
+			if (role !== Role.HR) {
+				// throw new IncorrectPasswordException(ErrorCodes.UNAUTHORIZED)
+				throw new HttpException(403, "Access Forbidden");
+			}
+			const deleteStatus = await this.employeeService.deleteEmployeeByID(
+				employeeID
+			);
+			res.status(200).send(deleteStatus);
+		} catch (error) {
+			next(error);
+		}
+	};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import Employee from "../entity/employee.entity";
-import HttpException from "../exceptions/http.exceptions";
-import EmployeeService from "../service/employee.service";
-import express from "express";
-import {NextFunction} from "express";
-
-class EmployeeController {
-    public router: express.Router;
-
-    constructor(private employeeService: EmployeeService) {
-        this.router = express.Router();
-
-        this.router.get("/", this.getAllEmployees);
-        this.router.get("/:id", this.getEmployeeById);
-        this.router.post("/", this.createEmployee);
-    }
-    public getAllEmployees = async (req: express.Request, res: express.Response) => {
-        const employees = await this.employeeService.getAllEmployees();
-        res.status(200).send(employees);
-    }
-
-    public getEmployeeById =  async (req: express.Request, res: express.Response, next:NextFunction) => {
-
-        try{
-        const employeeId = Number(req.params.id);
-        const employee = await this.employeeService.getEmployeeById(employeeId);
-        if(!employee){
-            const error = new HttpException(404,`No employee found with id: ${req.params.id}`)
-            throw error
-        }
-        res.status(200).send(employee);
-        }
-        catch(err){
-            next(err)
-        }
-    }
-
-    public createEmployee = async (req:express.Request, res:express.Response,next:NextFunction) => {
-        const {email, name, address, age} = req.body
-        const emailFormat = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    try {if (!email.match(emailFormat)) {
-      throw new HttpException(400, "Invalid email format");
-    }
-    const savedEmployee = await this.employeeService.createEmployee(
-            email,
-            name,
-            age,
-            address
-        )
-
-    res.status(200).send(savedEmployee);
-    }
-    catch(err){ next(err)}
-       
-    }
-
-    
+	public loginEmployee = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			const { email, password } = req.body;
+			const token = await this.employeeService.loginEmployee(email, password);
+			res.status(200).send(token);
+		} catch (error) {
+			next(error);
+		}
+	};
 }
-export default EmployeeController;
-
