@@ -32,7 +32,10 @@ __decorate([
     __metadata("design:type", Number)
 ], Employee.prototype, "age", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => address_entity_1.default, (address) => address.employee),
+    (0, typeorm_1.OneToOne)(() => address_entity_1.default, (address) => address.employee, {
+        cascade: true,
+        onDelete: "CASCADE"
+    }),
     __metadata("design:type", address_entity_1.default)
 ], Employee.prototype, "address", void 0);
 __decorate([

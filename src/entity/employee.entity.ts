@@ -15,19 +15,13 @@ class Employee extends AbstractEntity {
     @Column()
     age: Number;
 
-    @OneToOne(() => Address, (address) => address.employee,
-    // {
-    //     cascade: true,
-    //     onDelete: "CASCADE"
-    // }
-    )
+    @OneToOne(() => Address, (address) => address.employee,{
+        cascade: true,
+        onDelete: "CASCADE"
+    })
     address: Address;
 
-    @ManyToOne(()=>Department, (department) => department.employees, 
-    // {
-    //     cascade: ["insert","update"]
-    // }
-)
+    @ManyToOne(()=>Department, (department) => department.employees)
     department: Department;
 
     @Column({ nullable: true })

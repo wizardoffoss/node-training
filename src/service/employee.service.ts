@@ -38,10 +38,10 @@ export class EmployeeService {
 		password: string,
 		role: Role,
 		address: CreateAddressDto,
-		department: string
+		departmentName: string
 	) => {
-		const departmentName = await this.departmentRepository.findOneBy({
-			name: department,
+		const department = await this.departmentRepository.findOneBy({
+			name: departmentName,
 		});
 
 		if (!department) {
@@ -52,7 +52,7 @@ export class EmployeeService {
 		}
 		const newEmployee = new Employee();
 		const newAddress = new Address();
-		const newDepartment = new Department()
+		// const newDepartment = new Department()
 		newEmployee.name = name;
 		newEmployee.email = email;
 		newEmployee.age = age;
@@ -61,7 +61,7 @@ export class EmployeeService {
 		newAddress.line1 = address.line1;
 		newAddress.pincode = address.pincode;
 		newEmployee.address = newAddress;
-		newEmployee.department = newDepartment;
+		newEmployee.department = department;
 
 		return this.employeeRepository.save(newEmployee);
 	};

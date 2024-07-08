@@ -19,7 +19,6 @@ const http_exception_1 = __importDefault(require("../exception/http.exception"))
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const constants_1 = require("../utils/constants");
-const department_entity_1 = __importDefault(require("../entity/department.entity"));
 class EmployeeService {
     constructor(employeeRepository, departmentRepository) {
         this.employeeRepository = employeeRepository;
@@ -36,16 +35,16 @@ class EmployeeService {
             }
             return employee;
         });
-        this.createEmployee = (email, name, age, password, role, address, department) => __awaiter(this, void 0, void 0, function* () {
-            const departmentName = yield this.departmentRepository.findOneBy({
-                name: department,
+        this.createEmployee = (email, name, age, password, role, address, departmentName) => __awaiter(this, void 0, void 0, function* () {
+            const department = yield this.departmentRepository.findOneBy({
+                name: departmentName,
             });
             if (!department) {
                 throw new http_exception_1.default(404, `Department with name: ${department} was not found`);
             }
             const newEmployee = new employee_entity_1.default();
             const newAddress = new address_entity_1.default();
-            const newDepartment = new department_entity_1.default();
+            // const newDepartment = new Department()
             newEmployee.name = name;
             newEmployee.email = email;
             newEmployee.age = age;
@@ -54,7 +53,7 @@ class EmployeeService {
             newAddress.line1 = address.line1;
             newAddress.pincode = address.pincode;
             newEmployee.address = newAddress;
-            newEmployee.department = newDepartment;
+            newEmployee.department = department;
             return this.employeeRepository.save(newEmployee);
         });
         this.updateEmployeeByID = (id, email, name, age, address, departmentName) => __awaiter(this, void 0, void 0, function* () {
