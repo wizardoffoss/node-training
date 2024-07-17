@@ -1,5 +1,6 @@
 import {
 	IsEmail,
+	isEnum,
 	IsEnum,
 	IsNotEmpty,
 	IsNumber,
@@ -13,6 +14,7 @@ import "reflect-metadata";
 import { CreateAddressDto, UpdateAddressDto } from "./address.dto";
 import { CreateDepartmentDto } from "./department.dto";
 import { Role } from "../utils/role.enum";
+import { Status } from "../utils/status.enum";
 
 class CreateEmployeeDto {
 	@IsNotEmpty()
@@ -41,6 +43,9 @@ class CreateEmployeeDto {
 	@IsEnum(Role)
 	role: Role;
 
+	@IsEnum(Status)
+	status: Status;
+
 	@IsNotEmpty()
 	@IsString()
 	department: string;
@@ -59,6 +64,14 @@ class UpdateEmployeeDto {
 	@IsOptional()
 	@IsNumber()
 	age: Number;
+
+	@IsOptional()
+	@IsEnum(Status)
+	status: Status;
+
+	@IsOptional()
+	@IsEnum(Role)
+	role: Role;
 
 	@IsOptional()
 	@ValidateNested({ each: true })

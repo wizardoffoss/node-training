@@ -85,6 +85,7 @@ export class EmployeeController {
 				employeeDto.age,
 				employeeDto.password,
 				employeeDto.role,
+				employeeDto.status,
 				employeeDto.address,
 				employeeDto.department
 			);
@@ -120,6 +121,8 @@ export class EmployeeController {
 				employeeDto.email,
 				employeeDto.name,
 				employeeDto.age,
+				employeeDto.role,
+				employeeDto.status,
 				employeeDto.address,
 				employeeDto.department
 			);

@@ -16,6 +16,7 @@ const typeorm_1 = require("typeorm");
 const abstract_entity_1 = __importDefault(require("./abstract-entity"));
 const address_entity_1 = __importDefault(require("./address.entity"));
 const role_enum_1 = require("../utils/role.enum");
+const status_enum_1 = require("../utils/status.enum");
 const department_entity_1 = __importDefault(require("./department.entity"));
 let Employee = class Employee extends abstract_entity_1.default {
 };
@@ -50,6 +51,10 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Employee.prototype, "role", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: status_enum_1.Status.ACTIVE }),
+    __metadata("design:type", String)
+], Employee.prototype, "status", void 0);
 Employee = __decorate([
     (0, typeorm_1.Entity)()
 ], Employee);

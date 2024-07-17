@@ -10,6 +10,7 @@ import { jwtPayload } from "../utils/jwtPayload";
 import { JWT_SECRET, JWT_VALIDITY } from "../utils/constants";
 import DepartmentRepository from "../repository/department.repository";
 import Department from "../entity/department.entity";
+import { Status } from "../utils/status.enum";
 
 export class EmployeeService {
 	constructor(
@@ -37,6 +38,7 @@ export class EmployeeService {
 		age: Number,
 		password: string,
 		role: Role,
+		status: Status,
 		address: CreateAddressDto,
 		departmentName: string
 	) => {
@@ -47,7 +49,7 @@ export class EmployeeService {
 		if (!department) {
 			throw new HttpException(
 				404,
-				`Department with name: ${department} was not found`
+				`Department with name: ${departmentName} was not found`
 			);
 		}
 		const newEmployee = new Employee();
@@ -57,6 +59,7 @@ export class EmployeeService {
 		newEmployee.email = email;
 		newEmployee.age = age;
 		newEmployee.role = role;
+		newEmployee.status = status;
 		newEmployee.password = password ? await bcrypt.hash(password, 10) : "";
 		newAddress.line1 = address.line1;
 		newAddress.pincode = address.pincode;
@@ -71,6 +74,8 @@ export class EmployeeService {
 		email: string,
 		name: string,
 		age: Number,
+		role: Role,
+		status: Status,
 		address: UpdateAddressDto,
 		departmentName: string
 	) => {
@@ -88,6 +93,8 @@ export class EmployeeService {
 		existingEmployee.name = name;
 		existingEmployee.email = email;
 		existingEmployee.age = age;
+		existingEmployee.role = role;
+		existingEmployee.status = status;
 		if (address) {
 			existingEmployee.address.line1 = address.line1;
 			existingEmployee.address.pincode = address.pincode;

@@ -35,12 +35,12 @@ class EmployeeService {
             }
             return employee;
         });
-        this.createEmployee = (email, name, age, password, role, address, departmentName) => __awaiter(this, void 0, void 0, function* () {
+        this.createEmployee = (email, name, age, password, role, status, address, departmentName) => __awaiter(this, void 0, void 0, function* () {
             const department = yield this.departmentRepository.findOneBy({
                 name: departmentName,
             });
             if (!department) {
-                throw new http_exception_1.default(404, `Department with name: ${department} was not found`);
+                throw new http_exception_1.default(404, `Department with name: ${departmentName} was not found`);
             }
             const newEmployee = new employee_entity_1.default();
             const newAddress = new address_entity_1.default();
@@ -49,6 +49,7 @@ class EmployeeService {
             newEmployee.email = email;
             newEmployee.age = age;
             newEmployee.role = role;
+            newEmployee.status = status;
             newEmployee.password = password ? yield bcrypt_1.default.hash(password, 10) : "";
             newAddress.line1 = address.line1;
             newAddress.pincode = address.pincode;
@@ -56,7 +57,7 @@ class EmployeeService {
             newEmployee.department = department;
             return this.employeeRepository.save(newEmployee);
         });
-        this.updateEmployeeByID = (id, email, name, age, address, departmentName) => __awaiter(this, void 0, void 0, function* () {
+        this.updateEmployeeByID = (id, email, name, age, role, status, address, departmentName) => __awaiter(this, void 0, void 0, function* () {
             const department = yield this.departmentRepository.findOneBy({
                 name: departmentName,
             });
@@ -67,6 +68,8 @@ class EmployeeService {
             existingEmployee.name = name;
             existingEmployee.email = email;
             existingEmployee.age = age;
+            existingEmployee.role = role;
+            existingEmployee.status = status;
             if (address) {
                 existingEmployee.address.line1 = address.line1;
                 existingEmployee.address.pincode = address.pincode;

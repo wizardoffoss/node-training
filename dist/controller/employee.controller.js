@@ -66,7 +66,7 @@ class EmployeeController {
                     const errorString = "Validation Failed!";
                     throw new http_exception_1.default(400, errorString, errors);
                 }
-                const savedEmployee = yield this.employeeService.createEmployee(employeeDto.email, employeeDto.name, employeeDto.age, employeeDto.password, employeeDto.role, employeeDto.address, employeeDto.department);
+                const savedEmployee = yield this.employeeService.createEmployee(employeeDto.email, employeeDto.name, employeeDto.age, employeeDto.password, employeeDto.role, employeeDto.status, employeeDto.address, employeeDto.department);
                 res.status(201).send(savedEmployee);
             }
             catch (error) {
@@ -90,7 +90,7 @@ class EmployeeController {
                     const errorString = "Validation Failed!";
                     throw new http_exception_1.default(400, errorString, errors);
                 }
-                const updatedEmployee = yield this.employeeService.updateEmployeeByID(employeeID, employeeDto.email, employeeDto.name, employeeDto.age, employeeDto.address, employeeDto.department);
+                const updatedEmployee = yield this.employeeService.updateEmployeeByID(employeeID, employeeDto.email, employeeDto.name, employeeDto.age, employeeDto.role, employeeDto.status, employeeDto.address, employeeDto.department);
                 res.status(200).send(updatedEmployee);
             }
             catch (error) {
