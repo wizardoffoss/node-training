@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const cors_1 = __importDefault(require("cors"));
 const logger_middleware_1 = __importDefault(require("./middleware/logger.middleware"));
 const data_source_db_1 = __importDefault(require("./db/data-source.db"));
 const error_middleware_1 = __importDefault(require("./middleware/error.middleware"));
@@ -22,6 +23,7 @@ const department_routes_1 = __importDefault(require("./routes/department.routes"
 const server = (0, express_1.default)();
 server.use(logger_middleware_1.default);
 server.use(body_parser_1.default.json());
+server.use((0, cors_1.default)());
 server.use("/employees", employee_routes_1.default);
 server.use("/departments", department_routes_1.default);
 server.use(error_middleware_1.default);

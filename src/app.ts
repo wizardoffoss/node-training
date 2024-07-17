@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
+import cors from 'cors'
 import loggerMiddleware from "./middleware/logger.middleware";
 import dataSource from "./db/data-source.db";
 import errorLoggerMiddleware from "./middleware/error.middleware";
@@ -9,6 +10,7 @@ import departmentRoutes from "./routes/department.routes";
 const server = express();
 server.use(loggerMiddleware);
 server.use(bodyParser.json());
+server.use(cors())
 server.use("/employees", employeeRoutes);
 server.use("/departments", departmentRoutes);
 server.use(errorLoggerMiddleware);
